@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import * as api from '../api/api';
 import ReactTable from 'react-table';
 import 'react-table/react-table.css';
+import SelectArea from './selectarea.js';
+
 
 class Main extends Component {
   getInitialState() {return {
@@ -16,30 +18,31 @@ class Main extends Component {
         brands : [],
         webpages : [],
         campaigns : [],
-        currentBrand  : ''
+        currentBrand  : '',
+        loading : false
       }
       this.fetchBrands();
   }
-  onBrandSelectChange(event){
-    console.log(event.target.value);
-    const brandId = event.target.value;
-      this.fetchCampaigns(event.target.value);
-    api.fetchWebPages(event.target.value).then((res)=>{
-      console.log(res);
-      this.setState({brands : this.state.brands, webpages : res,currentBrand : brandId });
+  onBrandSelectChange(event,index,value){
+    this.state.loading = true;
+    const brandId = value;
+      this.fetchCampaigns(value);
+    api.fetchWebPages(value).then((res)=>{
+  
+      this.setState({brands : this.state.brands, webpages : res,currentBrand : brandId,loading :false });
     })
   }
 
-  onCampaignSelectChange(event){
-
-      api.fetchWebPagesFilteredByCampaign(this.state.currentBrand,event.target.value)
+  onCampaignSelectChange(event,index,value){
+      api.fetchWebPagesFilteredByCampaign(this.state.currentBrand,value)
       .then((res)=>{
-        this.setState({brands : this.state.brands, webpages :res,currentBrand : this.state.currentBrand ,campaigns :this.state.campaigns})
+        this.setState({brands : this.state.brands, webpages :res,currentBrand : this.state.currentBrand ,
+          campaigns :this.state.campaigns,currentCampaign : value})
       })
   }
 
   fetchCampaigns(brandId){
-      console.log(brandId);
+  
       api.fetchCampaigns(brandId).then((res)=>{
       console.log(res);
       this.setState({brands : this.state.brands, webpages : this.state.webpages, campaigns : res,currentBrand : this.state.currentBrand});
@@ -48,7 +51,6 @@ class Main extends Component {
 
   fetchBrands(){
     api.fetchBrands().then((res)=>{
-      console.log(res);
       this.setState({brands : res});
     })
   }
@@ -61,16 +63,11 @@ renderOptions(arr){
   render() {
     return (
       <div>
-          <select onChange={this.onBrandSelectChange.bind(this)}>
-            {
-              this.renderOptions(this.state.brands)
-            }
-          </select>
-          <select onChange={this.onCampaignSelectChange.bind(this)}>
-          {
-            this.renderOptions(this.state.campaigns)
-          }
-          </select>
+          <SelectArea brands={this.state.brands} currentBrand={this.state.currentBrand} 
+          currentCampaign={this.state.currentCampaign} campaigns={this.state.campaigns} 
+          onBrandSelectChange={this.onBrandSelectChange.bind(this)} 
+          onCampaignSelectChange={this.onCampaignSelectChange.bind(this)} />
+          
           <ReactTable 
             noDataText="No Web Pages to show, select a different brand or campaign"
             data={this.state.webpages}
@@ -90,6 +87,7 @@ renderOptions(arr){
               ]}
             defaultPageSize={17}
             className="-striped -highlight" 
+            loading={this.state.loading}
             /> 
       </div>
     );

@@ -13,8 +13,10 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider>
-      	<AppBar title={"Brands Dashboard"} />
-        <Main />
+		<div>
+      		<AppBar title={"Brands Dashboard"} />
+        	<Main />
+      	</div>
       </MuiThemeProvider>
     );
   }
