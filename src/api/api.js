@@ -14,14 +14,19 @@ export async function fetchWebPages(brandId){
   const ids = data.Results.map(d => d.Id);
    const promises = ids.map(id => axios.get('http://localhost:3001/web/pages/'+id+'/'));
    return axios.all(promises).then((responses)=> {
-     console.log(JSON.stringify(responses));
-       return responses.map(response => response.data.Results[0]);
+       return responses.map(response =>({ ...response.data.Results[0],LastScored :
+          response.data.Results[0].LastScored ? response.data.Results[0].LastScored : "LastScored N/A" }));
    });
 }
 
 export async function fetchWebPagesFilteredByCampaign(brandId,campaignId){
   const {data} = await axios.get('http://localhost:3001/web/pages/?brand='+brandId+'&campaign='+campaignId);
-  return data.Results;
+  const ids = data.Results.map(d => d.Id);
+   const promises = ids.map(id => axios.get('http://localhost:3001/web/pages/'+id+'/'));
+   return axios.all(promises).then((responses)=> {
+       return responses.map(response =>({ ...response.data.Results[0],LastScored :
+          response.data.Results[0].LastScored ? response.data.Results[0].LastScored : "LastScored N/A" }));
+   });
 }
 
 export async function fetchCampaigns(brandId){

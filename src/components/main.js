@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import * as api from '../api/api';
+import ReactTable from 'react-table';
+import 'react-table/react-table.css';
+
 class Main extends Component {
   getInitialState() {return {
     brands : [],
@@ -68,13 +71,26 @@ renderOptions(arr){
             this.renderOptions(this.state.campaigns)
           }
           </select>
-          <ul>
-            {
-              !this.state.webpages || !this.state.webpages.length
-              ?  <p>No data</p>
-              : this.state.webpages.map(el => {return <li key={el.Id}>{el.Url} {el.Score} {el.LastScored ? el.LastScored : "LastScored N/A"}</li>})
-            }
-          </ul>
+          <ReactTable 
+            noDataText="No Web Pages to show, select a different brand or campaign"
+            data={this.state.webpages}
+            columns={[
+                {
+                  Header : "Id",accessor : "Id"
+                },
+                {
+                  Header: "URL", accessor : "Url"
+                },
+                {
+                  Header: "Score", accessor: "Score"
+                },
+                {
+                  Header:"Last Scored Date", accessor:"LastScored"
+                }
+              ]}
+            defaultPageSize={17}
+            className="-striped -highlight" 
+            /> 
       </div>
     );
   }
