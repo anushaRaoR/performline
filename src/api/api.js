@@ -11,7 +11,12 @@ export async function fetchBrands(){
 export async function fetchWebPages(brandId){
   console.log(brandId+" brandid")
   const {data} = await axios.get('http://localhost:3001/web/pages/?brand='+brandId);
-  return data.Results;
+  const ids = data.Results.map(d => d.Id);
+   const promises = ids.map(id => axios.get('http://localhost:3001/web/pages/'+id+'/'));
+   return axios.all(promises).then((responses)=> {
+     console.log(JSON.stringify(responses));
+       return responses.map(response => response.data.Results[0]);
+   });
 }
 
 export async function fetchWebPagesFilteredByCampaign(brandId,campaignId){
@@ -24,3 +29,8 @@ export async function fetchCampaigns(brandId){
   const {data} = await axios.get('http://localhost:3001/common/campaigns/?brand='+brandId);
   return data.Results;
 }
+
+export async function fetchWebPage(webpageId){
+   const {data} = await axios.get('http://localhost:3001/web/pages/'+webpageId);
+   return data.Results[0];
+ }

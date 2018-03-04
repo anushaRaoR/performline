@@ -50,26 +50,29 @@ class Main extends Component {
     })
   }
 
+renderOptions(arr){
+     return arr.map(el => <option key={el.Id} value={el.Id}>{el.Name}</option>)
+   }
+
+
   render() {
     return (
       <div>
-        <div>
           <select onChange={this.onBrandSelectChange.bind(this)}>
             {
-              this.state.brands.map(el => {return <option key={el.Id} value={el.Id}>{el.Name}</option> })
+              this.renderOptions(this.state.brands)
             }
           </select>
           <select onChange={this.onCampaignSelectChange.bind(this)}>
           {
-            this.state.campaigns.map(el => {return <option key={el.Id} value={el.Id}>{el.Name}</option> })
+            this.renderOptions(this.state.campaigns)
           }
           </select>
-        </div>
           <ul>
             {
               !this.state.webpages || !this.state.webpages.length
               ?  <p>No data</p>
-              : this.state.webpages.map(el => {return <li key={el.Id}>{el.Url}</li>})
+              : this.state.webpages.map(el => {return <li key={el.Id}>{el.Url} {el.Score} {el.LastScored ? el.LastScored : "LastScored N/A"}</li>})
             }
           </ul>
       </div>

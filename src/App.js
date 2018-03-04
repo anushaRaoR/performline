@@ -4,7 +4,7 @@ import './App.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 import Main from './components/main';
-
+import AppBar from './components/appbar';
 
 class App extends Component {
 
@@ -13,6 +13,7 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider>
+      	<AppBar title={"Brands Dashboard"} />
         <Main />
       </MuiThemeProvider>
     );
